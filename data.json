@@ -1,0 +1,28 @@
+{
+  "fund": {
+    "value": 400.00,
+    "totalShares": 40,
+    "sharePrice": 10.00
+  },
+  "investors": [
+    {
+      "name": "Léonie",
+      "investment": 180.00,
+      "shares": 18,
+      "currentValue": 180.00,
+      "return": 0.00
+    },
+    {
+      "name": "Éliot",
+      "investment": 220.00,
+      "shares": 22,
+      "currentValue": 220.00,
+      "return": 0.00
+    }
+  ],
+  "performance": {
+    "ytd": 0.00,
+    "oneYear": 0.00,
+    "twoYears": 0.00
+  }
+}
