@@ -132,6 +132,16 @@
             box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
         }
 
+        .investor-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 20px;
+            border: 3px solid #D4AF37;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
         .investor-name {
             font-size: 1.4em;
             font-weight: 600;
@@ -364,6 +374,19 @@
             return 'return-neutral';
         }
 
+        // Get investor photo based on name
+        function getInvestorPhoto(name) {
+            const nameLower = name.toLowerCase().trim();
+            if (nameLower.includes('léonie') || nameLower.includes('leonie')) {
+                return 'Leonie.png';
+            } else if (nameLower.includes('éliot') || nameLower.includes('eliot')) {
+                return 'Eliot.png';
+            } else if (nameLower.includes('édouard') || nameLower.includes('edouard')) {
+                return 'Edouard.png';
+            }
+            return ''; // No photo for unknown investors
+        }
+
         // Parse CSV data from Google Sheets
         function parseCSV(csv) {
             const lines = csv.trim().split('\n');
@@ -492,8 +515,11 @@
                     card.className = 'investor-card';
 
                     const returnClass = getReturnClass(investor.return);
+                    const photoUrl = getInvestorPhoto(investor.name);
+                    const photoHtml = photoUrl ? `<img src="${photoUrl}" alt="${investor.name}" class="investor-photo">` : '';
 
                     card.innerHTML = `
+                        ${photoHtml}
                         <div class="investor-name">${investor.name}</div>
                         <div class="investor-value-display">
                             <div class="investor-value-amount">${formatCurrency(investor.currentValue)}</div>
