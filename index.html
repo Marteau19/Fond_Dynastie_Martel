@@ -512,11 +512,14 @@
                 const investorsGrid = document.getElementById('investorsGrid');
                 investorsGrid.innerHTML = '';
 
+                // Use the fund's YTD performance for all investors since they all own shares in the same fund
+                const fundReturn = data.performance.ytd;
+
                 data.investors.forEach(investor => {
                     const card = document.createElement('div');
                     card.className = 'investor-card';
 
-                    const returnClass = getReturnClass(investor.return);
+                    const returnClass = getReturnClass(fundReturn);
                     const photoUrl = getInvestorPhoto(investor.name);
                     const photoHtml = photoUrl ? `<img src="${photoUrl}" alt="${investor.name}" class="investor-photo">` : '';
 
@@ -534,10 +537,6 @@
                             <div class="detail-row">
                                 <span class="detail-label">Actions</span>
                                 <span class="detail-value">${investor.shares}</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Rendement</span>
-                                <span class="detail-value ${returnClass}">${formatPercentage(investor.return)}</span>
                             </div>
                         </div>
                     `;
