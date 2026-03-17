@@ -251,6 +251,26 @@
             font-weight: 600;
         }
 
+        .company-growth {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .company-growth.positive {
+            background: #52c41a;
+            color: #fff;
+        }
+
+        .company-growth.negative {
+            background: #ff4d4f;
+            color: #fff;
+        }
+
         .update-info {
             text-align: center;
             color: #666;
@@ -438,7 +458,8 @@
                     result.companies.push({
                         name: columnA,
                         logoUrl: columnB,
-                        percentage: parseValue(columnC)
+                        percentage: parseValue(columnC),
+                        growth: columnD !== '' ? parseValue(columnD) : null
                     });
                     return;
                 }
@@ -574,9 +595,14 @@
                             ? `${company.logoUrl}&_=${cacheBuster}`
                             : `${company.logoUrl}?_=${cacheBuster}`;
 
+                        const growthHtml = company.growth !== null
+                            ? `<div class="company-growth ${company.growth >= 0 ? 'positive' : 'negative'}">${company.growth >= 0 ? '+' : ''}${formatPercentage(company.growth)}</div>`
+                            : '';
+
                         logoWrapper.innerHTML = `
                             <img src="${logoUrl}" alt="${company.name}" title="${company.name}">
                             <div class="company-percentage">${formatPercentage(company.percentage)}</div>
+                            ${growthHtml}
                         `;
                         companiesGrid.appendChild(logoWrapper);
                     });
