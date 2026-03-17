@@ -568,17 +568,47 @@
                 let data;
 
                 if (GOOGLE_SHEET_CSV_URL) {
-                    // Fetch from Google Sheets with cache-busting
+                    // Fetch from Google Sheets with cache-busting and retry logic
                     const cacheBuster = new Date().getTime();
                     const csvUrl = GOOGLE_SHEET_CSV_URL.includes('?')
                         ? `${GOOGLE_SHEET_CSV_URL}&_=${cacheBuster}`
                         : `${GOOGLE_SHEET_CSV_URL}?_=${cacheBuster}`;
                     console.log('Fetching from Google Sheets:', csvUrl);
-                    const response = await fetch(csvUrl);
-                    const csvText = await response.text();
-                    console.log('CSV received:', csvText.substring(0, 200) + '...');
-                    data = parseCSV(csvText);
-                    console.log('Parsed data:', data);
+
+                    let retries = 3;
+                    let lastError;
+
+                    while (retries > 0) {
+                        try {
+                            const response = await fetch(csvUrl);
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            const csvText = await response.text();
+                            console.log('CSV received:', csvText.substring(0, 200) + '...');
+                            data = parseCSV(csvText);
+                            console.log('Parsed data:', data);
+
+                            // Validate that we got meaningful data (not just defaults)
+                            if (data && data.sp500 && data.sp500.ytd === 0 && data.performance.ytd !== 0) {
+                                console.warn('S&P500 data appears to be missing, retrying...');
+                                throw new Error('S&P500 data missing');
+                            }
+
+                            break; // Success, exit retry loop
+                        } catch (error) {
+                            lastError = error;
+                            retries--;
+                            if (retries > 0) {
+                                console.log(`Fetch failed, retrying... (${retries} attempts left)`);
+                                await new Promise(resolve => setTimeout(resolve, 1000));
+                            }
+                        }
+                    }
+
+                    if (!data && lastError) {
+                        throw lastError;
+                    }
                 } else {
                     // Fallback to local JSON
                     console.log('Using local data.json');
