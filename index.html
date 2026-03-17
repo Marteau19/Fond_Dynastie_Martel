@@ -504,9 +504,13 @@
                 let data;
 
                 if (GOOGLE_SHEET_CSV_URL) {
-                    // Fetch from Google Sheets
-                    console.log('Fetching from Google Sheets:', GOOGLE_SHEET_CSV_URL);
-                    const response = await fetch(GOOGLE_SHEET_CSV_URL);
+                    // Fetch from Google Sheets with cache-busting
+                    const cacheBuster = new Date().getTime();
+                    const csvUrl = GOOGLE_SHEET_CSV_URL.includes('?')
+                        ? `${GOOGLE_SHEET_CSV_URL}&_=${cacheBuster}`
+                        : `${GOOGLE_SHEET_CSV_URL}?_=${cacheBuster}`;
+                    console.log('Fetching from Google Sheets:', csvUrl);
+                    const response = await fetch(csvUrl);
                     const csvText = await response.text();
                     console.log('CSV received:', csvText.substring(0, 200) + '...');
                     data = parseCSV(csvText);
