@@ -1,4 +1,4 @@
-# Investment Tracking Dashboard for Léonie & Éliot
+# Investment Tracking Dashboard for Éliot, Léonie et Édouard
 
 A simple, beautiful web page to track and share investment information with your kids.
 
