@@ -271,6 +271,53 @@
             color: #fff;
         }
 
+        .comparison-container {
+            display: flex;
+            gap: 20px;
+            align-items: stretch;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .comparison-item {
+            flex: 1;
+            min-width: 200px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .comparison-item:hover {
+            transform: translateY(-2px);
+            border-color: rgba(212, 175, 55, 0.5);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.1);
+        }
+
+        .comparison-item.highlight {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.05));
+            border-color: #D4AF37;
+        }
+
+        .comparison-label {
+            font-size: 0.9em;
+            color: #999;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .comparison-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: #D4AF37;
+        }
+
+        .comparison-item.highlight .comparison-value {
+            font-size: 2.5em;
+        }
+
         .update-info {
             text-align: center;
             color: #666;
@@ -351,6 +398,24 @@
             </div>
         </div>
 
+        <div class="card" id="comparisonSection" style="display: none;">
+            <h2>Performance vs S&P500</h2>
+            <div class="comparison-container">
+                <div class="comparison-item">
+                    <div class="comparison-label">Fond Dynastie Martel (YTD)</div>
+                    <div class="comparison-value" id="fundYTD">-</div>
+                </div>
+                <div class="comparison-item">
+                    <div class="comparison-label">S&P500 (YTD)</div>
+                    <div class="comparison-value" id="sp500YTD">-</div>
+                </div>
+                <div class="comparison-item highlight">
+                    <div class="comparison-label">Différence</div>
+                    <div class="comparison-value" id="differenceYTD">-</div>
+                </div>
+            </div>
+        </div>
+
         <div class="card" id="companiesSection" style="display: none;">
             <h2>Nos Investissements</h2>
             <div class="companies-grid" id="companiesGrid">
@@ -424,6 +489,11 @@
                     oneYear: 0,
                     twoYears: 0
                 },
+                sp500: {
+                    ytd: 0,
+                    oneYear: 0,
+                    twoYears: 0
+                },
                 companies: []
             };
 
@@ -485,13 +555,16 @@
                     result.fund.sharePrice = parseValue(columnB);
                 }
 
-                // Extract performance data
+                // Extract performance data (column B = fund, column C = S&P500)
                 if (columnA.toLowerCase().includes('année à date')) {
                     result.performance.ytd = parseValue(columnB);
+                    result.sp500.ytd = parseValue(columnC);
                 } else if (columnA === '1 an') {
                     result.performance.oneYear = parseValue(columnB);
+                    result.sp500.oneYear = parseValue(columnC);
                 } else if (columnA === '2 ans') {
                     result.performance.twoYears = parseValue(columnB);
+                    result.sp500.twoYears = parseValue(columnC);
                 }
             });
 
@@ -581,6 +654,38 @@
                 const perf2Years = document.getElementById('perf2Years');
                 perf2Years.textContent = formatPercentage(data.performance.twoYears);
                 perf2Years.className = 'metric-value';
+
+                // Update comparison section (YTD vs S&P500)
+                if (data.sp500 && data.sp500.ytd !== undefined) {
+                    const comparisonSection = document.getElementById('comparisonSection');
+                    comparisonSection.style.display = 'block';
+
+                    const fundYTD = document.getElementById('fundYTD');
+                    const sp500YTD = document.getElementById('sp500YTD');
+                    const differenceYTD = document.getElementById('differenceYTD');
+
+                    fundYTD.textContent = formatPercentage(data.performance.ytd);
+                    sp500YTD.textContent = formatPercentage(data.sp500.ytd);
+
+                    // Calculate difference
+                    const difference = data.performance.ytd - data.sp500.ytd;
+                    differenceYTD.textContent = (difference >= 0 ? '+' : '') + formatPercentage(difference);
+
+                    // Color code based on performance
+                    if (difference > 0) {
+                        fundYTD.style.color = '#52c41a'; // green
+                        sp500YTD.style.color = '#ff4d4f'; // red
+                        differenceYTD.style.color = '#52c41a'; // green
+                    } else if (difference < 0) {
+                        fundYTD.style.color = '#ff4d4f'; // red
+                        sp500YTD.style.color = '#52c41a'; // green
+                        differenceYTD.style.color = '#ff4d4f'; // red
+                    } else {
+                        fundYTD.style.color = '#D4AF37'; // gold
+                        sp500YTD.style.color = '#D4AF37'; // gold
+                        differenceYTD.style.color = '#D4AF37'; // gold
+                    }
+                }
 
                 // Update companies section
                 if (data.companies && data.companies.length > 0) {
