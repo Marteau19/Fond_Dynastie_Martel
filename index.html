@@ -655,8 +655,8 @@
                     const sp500YTD = document.getElementById('sp500YTD');
                     const differenceYTD = document.getElementById('differenceYTD');
 
-                    fundYTD.textContent = formatPercentage(data.performance.ytd);
-                    sp500YTD.textContent = formatPercentage(data.sp500.ytd);
+                    fundYTD.textContent = (data.performance.ytd >= 0 ? '+' : '') + formatPercentage(data.performance.ytd);
+                    sp500YTD.textContent = (data.sp500.ytd >= 0 ? '+' : '') + formatPercentage(data.sp500.ytd);
 
                     // Calculate difference
                     const difference = data.performance.ytd - data.sp500.ytd;
