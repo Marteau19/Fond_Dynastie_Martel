@@ -692,18 +692,31 @@
                     const difference = data.performance.ytd - data.sp500.ytd;
                     differenceYTD.textContent = (difference >= 0 ? '+' : '') + formatPercentage(difference);
 
-                    // Color code based on performance
-                    if (difference > 0) {
+                    // Color code based on individual performance values
+                    // Fund color: green if positive, red if negative
+                    if (data.performance.ytd > 0) {
                         fundYTD.style.color = '#52c41a'; // green
-                        sp500YTD.style.color = '#ff4d4f'; // red
-                        differenceYTD.style.color = '#52c41a'; // green
-                    } else if (difference < 0) {
+                    } else if (data.performance.ytd < 0) {
                         fundYTD.style.color = '#ff4d4f'; // red
-                        sp500YTD.style.color = '#52c41a'; // green
-                        differenceYTD.style.color = '#ff4d4f'; // red
                     } else {
                         fundYTD.style.color = '#D4AF37'; // gold
+                    }
+
+                    // S&P500 color: green if positive, red if negative
+                    if (data.sp500.ytd > 0) {
+                        sp500YTD.style.color = '#52c41a'; // green
+                    } else if (data.sp500.ytd < 0) {
+                        sp500YTD.style.color = '#ff4d4f'; // red
+                    } else {
                         sp500YTD.style.color = '#D4AF37'; // gold
+                    }
+
+                    // Difference color: green if positive, red if negative
+                    if (difference > 0) {
+                        differenceYTD.style.color = '#52c41a'; // green
+                    } else if (difference < 0) {
+                        differenceYTD.style.color = '#ff4d4f'; // red
+                    } else {
                         differenceYTD.style.color = '#D4AF37'; // gold
                     }
                 }
