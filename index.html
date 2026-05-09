@@ -470,6 +470,26 @@
             return ''; // No photo for unknown investors
         }
 
+        // Split a single CSV line respecting quoted fields
+        function splitCSVLine(line) {
+            const values = [];
+            let current = '';
+            let inQuotes = false;
+            for (let i = 0; i < line.length; i++) {
+                const ch = line[i];
+                if (ch === '"') {
+                    inQuotes = !inQuotes;
+                } else if (ch === ',' && !inQuotes) {
+                    values.push(current.trim());
+                    current = '';
+                } else {
+                    current += ch;
+                }
+            }
+            values.push(current.trim());
+            return values;
+        }
+
         // Parse CSV data from Google Sheets
         function parseCSV(csv) {
             const lines = csv.trim().split('\n');
@@ -504,7 +524,7 @@
 
             // Parse each line dynamically
             lines.forEach((line, index) => {
-                const values = line.split(',').map(v => v.trim());
+                const values = splitCSVLine(line);
                 const columnA = values[0] || '';
                 const columnB = values[1] || '';
                 const columnC = values[2] || '';
