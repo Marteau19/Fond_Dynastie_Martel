@@ -439,6 +439,11 @@
             return '$' + parseFloat(amount).toFixed(2);
         }
 
+        // Format currency without cents
+        function formatCurrencyNoCents(amount) {
+            return '$' + Math.round(parseFloat(amount)).toLocaleString('fr-CA');
+        }
+
         // Format percentage
         function formatPercentage(value) {
             return parseFloat(value).toFixed(2) + '%';
@@ -646,7 +651,7 @@
                         ${photoHtml}
                         <div class="investor-name">${investor.name}</div>
                         <div class="investor-value-display">
-                            <div class="investor-value-amount">${formatCurrency(investor.currentValue)}</div>
+                            <div class="investor-value-amount">${formatCurrencyNoCents(investor.currentValue)}</div>
                         </div>
                         <div class="investor-details">
                             <div class="detail-row">
