@@ -648,7 +648,7 @@
                 }
 
                 // Update fund overview
-                document.getElementById('fundValue').textContent = formatCurrency(data.fund.value);
+                document.getElementById('fundValue').textContent = formatCurrencyNoCents(data.fund.value);
                 document.getElementById('totalShares').textContent = data.fund.totalShares;
                 document.getElementById('sharePrice').textContent = formatCurrency(data.fund.sharePrice);
 
