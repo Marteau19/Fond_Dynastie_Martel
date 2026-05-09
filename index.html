@@ -530,8 +530,8 @@
                     return;
                 }
 
-                // Check for investor data (column D has a name)
-                if (columnD && columnD.length > 0 && !columnA.toLowerCase().includes('rendement')) {
+                // Check for investor data (column D has a name and column E looks like a dollar amount)
+                if (columnD && columnD.length > 0 && values[4] && values[4].includes('$')) {
                     // This row has investor data
                     result.investors.push({
                         name: columnD,
