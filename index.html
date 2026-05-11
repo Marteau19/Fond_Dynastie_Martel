@@ -605,7 +605,7 @@
 
                     while (retries > 0) {
                         try {
-                            const response = await fetch(csvUrl);
+                            const response = await fetch(csvUrl, { cache: 'no-store' });
                             if (!response.ok) {
                                 throw new Error(`HTTP error! status: ${response.status}`);
                             }
